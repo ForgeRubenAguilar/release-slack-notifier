@@ -1,0 +1,31 @@
+# action.yaml
+name: 'Ensure Ticket Accepted'
+description: 'Ensures a JIRA ticket is accepted before pull request merge.'
+inputs:
+  team_to_project_id:
+    description: 'Map from team name shorthand used on tickets to the project id that the project system uses for the team, if any. (JIRA does not require any.)'
+    required: true
+    default: "{}"
+  team_to_project_system:
+    description: 'Map from team name shorthand used on tickets to the project system the team uses.'
+    required: true
+    default: "{}"
+  project_system_credentials:
+    description: 'Map from project system to a [user, token] credentials array.'
+    required: true
+    default: "{}"
+  team:
+    description: 'Array of team prefixes for ticker names.'
+    required: true
+    default: "[]"
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.team_to_project_id }}
+    - ${{ inputs.team_to_project_system }}
+    - ${{ inputs.project_system_credentials }}
+    - ${{ inputs.team }}
+branding:
+  icon: "git-pull-request"
+  color: "orange"

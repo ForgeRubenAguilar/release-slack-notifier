@@ -1,0 +1,47 @@
+name: Ensure Ticket Status
+
+on:  
+  pull_request:
+    # Be aware you cannot use both branches and branches-ignore together 
+    branches-ignore:
+      - master
+      - development
+
+jobs:  
+  build:
+    runs-on: ubuntu-latest
+    name: Ensure Ticket exists and is Accepted
+    steps:
+      - name: Perform Ticket Check
+        # uses: ForgeRubenAguilar/release-slack-notifier@main
+        # uses: ./ # Uses an action in the root directory
+        with:
+          # Defaults to jira unless specified here.
+          team_to_project_system: |
+            {
+              "BAT": "pivotal",
+            }
+          team_to_project_id: |
+            {
+              "BAT": "2530518",
+            }
+          project_system_credentials: 
+            jira_api_user: ${{ NONPROD_JIRA_API_USER }}
+            jira_api_token: ${{ NONPROD_JIRA_API_TOKEN }}
+            # Pivotal only requires a token.
+            pivotal_api_user: ""
+            pivotal_api_token: ${{ NONPROD_PIVOTAL_API_TOKEN }}
+          # |
+          #   {
+          #     "jira": ["", ""],
+          #     "pivotal": ["", ""],
+          #   }
+          teams: |
+            [
+              "BAT",
+              "SHAR",
+              "DATA",
+            ]
+          pull_request_compare_branch_name: ${{ github.event.pull_request.head.ref }}
+          pull_request_base_branch_name: ${{ github.event.pull_request.base.ref }}
+          
